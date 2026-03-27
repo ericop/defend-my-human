@@ -1231,10 +1231,24 @@ for (const button of mobileButtons) {
     releaseVirtualKey(key);
   };
 
+  const tapPress = (event) => {
+    event.preventDefault();
+    button.classList.add("is-active");
+    pressVirtualKey(key);
+    window.setTimeout(() => {
+      button.classList.remove("is-active");
+      releaseVirtualKey(key);
+    }, 120);
+  };
+
   button.addEventListener("pointerdown", startPress);
   button.addEventListener("pointerup", endPress);
   button.addEventListener("pointerleave", endPress);
   button.addEventListener("pointercancel", endPress);
+  button.addEventListener("touchstart", startPress, { passive: false });
+  button.addEventListener("touchend", endPress, { passive: false });
+  button.addEventListener("touchcancel", endPress, { passive: false });
+  button.addEventListener("click", tapPress);
 }
 
 // The main loop advances the simulation by delta time and redraws every frame.
