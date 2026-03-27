@@ -34,35 +34,35 @@
     .mobile-controls {
       margin-top: 14px;
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 12px;
-      align-items: end;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      align-items: start;
       touch-action: none;
       user-select: none;
     }
 
-    .control-pad,
     .control-actions,
-    .control-menu {
+    .control-menu,
+    .control-row {
       display: flex;
       gap: 8px;
       align-items: center;
     }
 
-    .control-pad {
-      display: grid;
-      grid-template-columns: repeat(3, 58px);
-      grid-template-rows: repeat(2, 52px);
-      justify-content: start;
-    }
-
     .control-actions {
-      justify-content: center;
+      justify-content: flex-end;
     }
 
     .control-menu {
-      justify-content: end;
-      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .control-row {
+      grid-column: 1 / span 2;
+      display: grid;
+      grid-template-columns: repeat(3, 58px);
+      grid-template-rows: repeat(2, 52px);
+      justify-content: center;
     }
 
     .mobile-btn {
@@ -106,14 +106,14 @@
       }
 
       .mobile-controls {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 8px;
         padding: 8px 8px 10px;
       }
 
-      .control-pad,
       .control-actions,
-      .control-menu {
+      .control-menu,
+      .control-row {
         justify-content: center;
       }
 
@@ -140,28 +140,36 @@
       .wrap {
         width: 100vw;
         padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 70vw 30vw;
+        align-items: start;
       }
 
       canvas {
-        width: min(100vw, 586px);
+        width: 70vw;
         height: auto;
         max-height: 330px;
         border-radius: 0 0 16px 16px;
       }
 
       .mobile-controls {
-        margin-top: 6px;
-        padding: 0 8px 10px;
-        width: 100%;
-        grid-template-columns: auto auto auto;
-        justify-content: center;
-        gap: 8px;
+        margin-top: 0;
+        padding: 8px 8px 10px 6px;
+        width: 30vw;
+        min-height: 330px;
+        grid-template-columns: 1fr 1fr;
+        justify-content: stretch;
+        align-content: start;
+        gap: 10px;
       }
 
-      .control-pad {
+      .control-actions,
+      .control-menu {
+        justify-content: center;
+      }
+
+      .control-row {
+        grid-column: 1 / span 2;
         grid-template-columns: repeat(3, 50px);
         grid-template-rows: repeat(2, 42px);
       }
@@ -173,11 +181,11 @@
       }
 
       .mobile-btn.wide {
-        min-width: 72px;
+        min-width: 84px;
       }
 
       .mobile-btn.tall {
-        min-height: 90px;
+        min-height: 84px;
       }
     }
 
@@ -198,19 +206,19 @@
   <div class="wrap">
     <canvas id="game" width="960" height="540"></canvas>
     <div class="mobile-controls" aria-label="Mobile controls">
-      <div class="control-pad">
+      <div class="control-menu">
+        <button class="mobile-btn wide" type="button" data-key="Escape">Esc</button>
+      </div>
+      <div class="control-actions">
+        <button class="mobile-btn wide" type="button" data-key="Enter">Enter</button>
+      </div>
+      <div class="control-row">
         <button class="mobile-btn blank" type="button" tabindex="-1">.</button>
         <button class="mobile-btn" type="button" data-key="ArrowUp">Up</button>
         <button class="mobile-btn blank" type="button" tabindex="-1">.</button>
         <button class="mobile-btn" type="button" data-key="ArrowLeft">Left</button>
         <button class="mobile-btn" type="button" data-key="ArrowDown">Down</button>
         <button class="mobile-btn" type="button" data-key="ArrowRight">Right</button>
-      </div>
-      <div class="control-actions">
-        <button class="mobile-btn wide tall" type="button" data-key="Enter">Enter</button>
-      </div>
-      <div class="control-menu">
-        <button class="mobile-btn wide" type="button" data-key="Escape">Esc</button>
       </div>
     </div>
   </div>
