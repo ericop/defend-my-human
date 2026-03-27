@@ -35,6 +35,7 @@ const ctx = canvas.getContext("2d");
 const SAVE_KEY = "defend-my-human-progress";
 const mobileButtons = Array.from(document.querySelectorAll("[data-key]"));
 const catControls = document.querySelector(".cat-controls");
+const fullscreenButton = document.getElementById("fullscreen-btn");
 
 const keys = {
   dogLeft: false,
@@ -1210,6 +1211,22 @@ function syncMobileLayout() {
   }
 }
 
+async function toggleFullscreen() {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    const root = document.documentElement;
+    if (root.requestFullscreen) {
+      await root.requestFullscreen();
+    }
+  } catch (error) {
+    console.warn("Fullscreen toggle failed.", error);
+  }
+}
+
 window.addEventListener("keydown", (event) => {
   const inGameplay = ["intro", "playing", "game over"].includes(game.state);
   if (inGameplay) updateInput(event.key, true);
@@ -1268,6 +1285,13 @@ for (const button of mobileButtons) {
   button.addEventListener("touchend", endPress, { passive: false });
   button.addEventListener("touchcancel", endPress, { passive: false });
   button.addEventListener("click", tapPress);
+}
+
+if (fullscreenButton) {
+  fullscreenButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    toggleFullscreen();
+  });
 }
 
 // The main loop advances the simulation by delta time and redraws every frame.
