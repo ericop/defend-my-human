@@ -36,6 +36,7 @@ const SAVE_KEY = "defend-my-human-progress";
 const mobileButtons = Array.from(document.querySelectorAll("[data-key]"));
 const catControls = document.querySelector(".cat-controls");
 const fullscreenButton = document.getElementById("fullscreen-btn");
+const appWrap = document.querySelector(".wrap");
 
 const keys = {
   dogLeft: false,
@@ -1213,15 +1214,47 @@ function syncMobileLayout() {
 
 async function toggleFullscreen() {
   try {
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
+    const fullscreenElement =
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      document.msFullscreenElement;
+
+    if (fullscreenElement) {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+        return;
+      }
+
+      if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+        return;
+      }
+
+      if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+        return;
+      }
+
       return;
     }
 
-    const root = document.documentElement;
-    if (root.requestFullscreen) {
-      await root.requestFullscreen();
+    const target = appWrap || document.documentElement;
+    if (target.requestFullscreen) {
+      await target.requestFullscreen();
+      return;
     }
+
+    if (target.webkitRequestFullscreen) {
+      target.webkitRequestFullscreen();
+      return;
+    }
+
+    if (target.msRequestFullscreen) {
+      target.msRequestFullscreen();
+      return;
+    }
+
+    console.warn("Fullscreen is not supported in this browser context.");
   } catch (error) {
     console.warn("Fullscreen toggle failed.", error);
   }

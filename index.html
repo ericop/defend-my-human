@@ -97,17 +97,21 @@
     }
 
     .mobile-btn.wide {
-      min-width: 86px;
+      min-width: 110px;
     }
 
     .mobile-btn.icon-btn {
-      min-width: 52px;
+      min-width: 78px;
       padding: 0;
       font-size: 22px;
     }
 
     .mobile-btn.tall {
       min-height: 112px;
+    }
+
+    .mobile-btn.escape-btn {
+      min-width: 58px;
     }
 
     .blank {
@@ -144,7 +148,7 @@
       }
 
       .mobile-btn.wide {
-        min-width: 76px;
+        min-width: 96px;
       }
 
       .mobile-btn.tall {
@@ -152,8 +156,12 @@
       }
 
       .mobile-btn.icon-btn {
-        min-width: 46px;
+        min-width: 68px;
         font-size: 20px;
+      }
+
+      .mobile-btn.escape-btn {
+        min-width: 54px;
       }
     }
 
@@ -166,12 +174,12 @@
         width: 100vw;
         padding: 0;
         display: grid;
-        grid-template-columns: 55vw 45vw;
+        grid-template-columns: 67vw 33vw;
         align-items: start;
       }
 
       canvas {
-        width: min(55vw, 586px);
+        width: min(67vw, 586px);
         height: auto;
         max-height: calc(100vh - 12px);
         border-radius: 0 0 16px 16px;
@@ -181,7 +189,7 @@
       .mobile-controls {
         margin-top: 0;
         padding: 8px 8px 10px 6px;
-        width: 45vw;
+        width: 33vw;
         min-height: min-content;
         grid-template-columns: 1fr 1fr;
         justify-content: stretch;
@@ -212,7 +220,7 @@
       }
 
       .mobile-btn.wide {
-        min-width: 84px;
+        min-width: 98px;
       }
 
       .mobile-btn.tall {
@@ -220,8 +228,12 @@
       }
 
       .mobile-btn.icon-btn {
-        min-width: 42px;
+        min-width: 72px;
         font-size: 18px;
+      }
+
+      .mobile-btn.escape-btn {
+        min-width: 50px;
       }
 
       body.two-player-mode .wrap {
@@ -238,7 +250,8 @@
         min-height: min-content;
         align-content: start;
         justify-content: center;
-        padding-top: 8px;
+        padding: 2px 0 0;
+        margin: 0;
       }
 
       body.two-player-mode .mobile-controls {
@@ -272,7 +285,7 @@
     <canvas id="game" width="960" height="540"></canvas>
     <div class="mobile-controls" aria-label="Mobile controls">
       <div class="control-menu">
-        <button class="mobile-btn wide" type="button" data-key="Escape">Esc</button>
+        <button class="mobile-btn escape-btn" type="button" data-key="Escape">Esc</button>
       </div>
       <div class="control-actions">
         <button class="mobile-btn wide" type="button" data-key="Enter">Enter</button>
