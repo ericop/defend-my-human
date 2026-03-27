@@ -31,6 +31,88 @@
       padding: 18px;
     }
 
+    .mobile-controls {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: end;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .control-pad,
+    .control-actions,
+    .control-menu {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .control-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 58px);
+      grid-template-rows: repeat(2, 52px);
+      justify-content: start;
+    }
+
+    .control-actions {
+      justify-content: center;
+    }
+
+    .control-menu {
+      justify-content: end;
+      flex-wrap: wrap;
+    }
+
+    .mobile-btn {
+      border: 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--ink);
+      font: 700 18px/1 "Trebuchet MS", "Segoe UI", sans-serif;
+      min-width: 58px;
+      min-height: 52px;
+      box-shadow: 0 8px 18px rgba(23, 48, 66, 0.12);
+      touch-action: manipulation;
+    }
+
+    .mobile-btn:active,
+    .mobile-btn.is-active {
+      background: #ffdfae;
+      transform: translateY(1px);
+    }
+
+    .mobile-btn.wide {
+      min-width: 86px;
+    }
+
+    .mobile-btn.tall {
+      min-height: 112px;
+    }
+
+    .blank {
+      visibility: hidden;
+    }
+
+    @media (max-width: 720px) {
+      .wrap {
+        width: 100vw;
+        padding: 8px;
+      }
+
+      .mobile-controls {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .control-pad,
+      .control-actions,
+      .control-menu {
+        justify-content: center;
+      }
+    }
+
     canvas {
       display: block;
       width: 100%;
@@ -47,6 +129,22 @@
 <body>
   <div class="wrap">
     <canvas id="game" width="960" height="540"></canvas>
+    <div class="mobile-controls" aria-label="Mobile controls">
+      <div class="control-pad">
+        <button class="mobile-btn blank" type="button" tabindex="-1">.</button>
+        <button class="mobile-btn" type="button" data-key="ArrowUp">Up</button>
+        <button class="mobile-btn blank" type="button" tabindex="-1">.</button>
+        <button class="mobile-btn" type="button" data-key="ArrowLeft">Left</button>
+        <button class="mobile-btn" type="button" data-key="ArrowDown">Down</button>
+        <button class="mobile-btn" type="button" data-key="ArrowRight">Right</button>
+      </div>
+      <div class="control-actions">
+        <button class="mobile-btn wide tall" type="button" data-key="Enter">Enter</button>
+      </div>
+      <div class="control-menu">
+        <button class="mobile-btn wide" type="button" data-key="Escape">Esc</button>
+      </div>
+    </div>
   </div>
 
   <script src="defend-my-human.js"></script>

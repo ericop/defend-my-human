@@ -33,6 +33,7 @@ const CONFIG = {
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const SAVE_KEY = "defend-my-human-progress";
+const mobileButtons = Array.from(document.querySelectorAll("[data-key]"));
 
 const keys = {
   dogLeft: false,
@@ -439,23 +440,31 @@ class Cat {
   draw(ctx, tint = null) {
     const bounce = Math.sin(this.wiggle) * 1.5;
     const y = this.y + bounce;
+    const bodyColor = tint || (this.scared ? "#c7c7c7" : this.isStrong ? "#d5a46a" : "#8b8b9f");
+    const stripeColor = this.isStrong ? "#8c5a2d" : "#444";
 
-    ctx.fillStyle = tint || (this.scared ? "#c7c7c7" : this.isStrong ? "#6f6f85" : "#8b8b9f");
+    ctx.fillStyle = bodyColor;
     ctx.fillRect(this.x + 8, y + 10, 28, 16);
     ctx.fillRect(this.x + 30, y + 6, 14, 12);
     ctx.fillRect(this.x + 32, y + 2, 4, 6);
     ctx.fillRect(this.x + 40, y + 2, 4, 6);
-    ctx.fillStyle = "#444";
+    ctx.fillStyle = stripeColor;
     ctx.fillRect(this.x + 35, y + 10, 2, 2);
     ctx.fillRect(this.x + 41, y + 10, 2, 2);
     ctx.fillRect(this.x + 12, y + 24, 6, 8);
     ctx.fillRect(this.x + 24, y + 24, 6, 8);
     ctx.fillRect(this.x + 34, y + 24, 6, 8);
 
+    if (!this.scared && this.isStrong) {
+      ctx.fillRect(this.x + 14, y + 12, 14, 3);
+      ctx.fillRect(this.x + 17, y + 17, 10, 3);
+      ctx.fillRect(this.x + 32, y + 8, 8, 2);
+    }
+
     ctx.save();
     ctx.translate(this.x + 8, y + 14);
     ctx.rotate(Math.sin(this.wiggle) * 0.4 + (this.scared ? 0.7 : 0));
-    ctx.fillStyle = "#666";
+    ctx.fillStyle = this.isStrong ? "#8c5a2d" : "#666";
     ctx.fillRect(-14, -2, 16, 4);
     ctx.restore();
 
@@ -1089,7 +1098,7 @@ class Game {
       this.drawHud(ctx);
       this.drawMessagePanel(ctx, "Shopping Break", [
         "You have defeated " + this.totalCatsDefeated + " cats and earned " + this.coins + " coins.",
-        "Press Enter to keep playing, or M to go to the menu and shop."
+        "Press Up or Enter for the shop menu, or Right to keep playing."
       ]);
       return;
     }
@@ -1140,21 +1149,14 @@ function updateInput(key, pressed) {
   if (key === "w" || key === "W") keys.catJump = pressed;
 }
 
-window.addEventListener("keydown", (event) => {
-  const inGameplay = ["intro", "playing", "game over"].includes(game.state);
-  if (inGameplay) updateInput(event.key, true);
-
-  if (["ArrowLeft", "ArrowRight", "ArrowUp"].includes(event.key)) {
-    event.preventDefault();
-  }
-
+function handleGameCommand(key) {
   if (game.state === "menu") {
-    if (event.key === "ArrowUp") game.menuSelection = (game.menuSelection + 2) % 3;
-    if (event.key === "ArrowDown") game.menuSelection = (game.menuSelection + 1) % 3;
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+    if (key === "ArrowUp") game.menuSelection = (game.menuSelection + 2) % 3;
+    if (key === "ArrowDown") game.menuSelection = (game.menuSelection + 1) % 3;
+    if (key === "ArrowLeft" || key === "ArrowRight") {
       if (game.menuSelection === 2) game.setMode(game.mode === "single" ? "two-player" : "single");
     }
-    if (event.key === "Enter") {
+    if (key === "Enter") {
       if (game.menuSelection === 0) game.startGame();
       if (game.menuSelection === 1) game.openShop();
       if (game.menuSelection === 2) game.setMode(game.mode === "single" ? "two-player" : "single");
@@ -1163,9 +1165,9 @@ window.addEventListener("keydown", (event) => {
   }
 
   if (game.state === "shop") {
-    if (event.key === "ArrowUp") game.shopSelection = (game.shopSelection + 6) % 7;
-    if (event.key === "ArrowDown") game.shopSelection = (game.shopSelection + 1) % 7;
-    if (event.key === "Enter") {
+    if (key === "ArrowUp") game.shopSelection = (game.shopSelection + 6) % 7;
+    if (key === "ArrowDown") game.shopSelection = (game.shopSelection + 1) % 7;
+    if (key === "Enter") {
       if (game.shopSelection === 0) game.buyOrToggleItem("bluey");
       if (game.shopSelection === 1) game.buyOrToggleItem("cape");
       if (game.shopSelection === 2) game.buyOrToggleItem("basketball");
@@ -1174,25 +1176,66 @@ window.addEventListener("keydown", (event) => {
       if (game.shopSelection === 5) game.buyOrToggleItem("wizard");
       if (game.shopSelection === 6) game.enterMenu();
     }
-    if (event.key === "Escape") game.enterMenu();
+    if (key === "Escape") game.enterMenu();
     return;
   }
 
   if (game.state === "shop-break") {
-    if (event.key === "Enter") game.state = "playing";
-    if (event.key === "m" || event.key === "M") game.enterMenu();
+    if (key === "ArrowUp" || key === "Enter" || key === "Escape") game.enterMenu();
+    if (key === "ArrowRight") game.state = "playing";
     return;
   }
 
-  if (event.key === "1" && game.mode !== "single") game.setMode("single");
-  if (event.key === "2" && game.mode !== "two-player") game.setMode("two-player");
-  if (game.state === "game over" && event.key === "Enter") game.startGame();
-  if (game.state === "game over" && (event.key === "m" || event.key === "M")) game.enterMenu();
+  if (key === "1" && game.mode !== "single") game.setMode("single");
+  if (key === "2" && game.mode !== "two-player") game.setMode("two-player");
+  if (game.state === "game over" && key === "Enter") game.startGame();
+  if ((game.state === "game over" || game.state === "playing" || game.state === "intro") && key === "Escape") game.enterMenu();
+  if (game.state === "game over" && (key === "m" || key === "M")) game.enterMenu();
+}
+
+function pressVirtualKey(key) {
+  updateInput(key, true);
+  handleGameCommand(key);
+}
+
+function releaseVirtualKey(key) {
+  updateInput(key, false);
+}
+
+window.addEventListener("keydown", (event) => {
+  const inGameplay = ["intro", "playing", "game over"].includes(game.state);
+  if (inGameplay) updateInput(event.key, true);
+
+  if (["ArrowLeft", "ArrowRight", "ArrowUp"].includes(event.key)) {
+    event.preventDefault();
+  }
+  handleGameCommand(event.key);
 });
 
 window.addEventListener("keyup", (event) => {
   updateInput(event.key, false);
 });
+
+for (const button of mobileButtons) {
+  const { key } = button.dataset;
+
+  const startPress = (event) => {
+    event.preventDefault();
+    button.classList.add("is-active");
+    pressVirtualKey(key);
+  };
+
+  const endPress = (event) => {
+    event.preventDefault();
+    button.classList.remove("is-active");
+    releaseVirtualKey(key);
+  };
+
+  button.addEventListener("pointerdown", startPress);
+  button.addEventListener("pointerup", endPress);
+  button.addEventListener("pointerleave", endPress);
+  button.addEventListener("pointercancel", endPress);
+}
 
 // The main loop advances the simulation by delta time and redraws every frame.
 function frame(timestamp) {
