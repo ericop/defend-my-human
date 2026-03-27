@@ -43,7 +43,8 @@
 
     .control-actions,
     .control-menu,
-    .control-row {
+    .control-row,
+    .cat-controls {
       display: flex;
       gap: 8px;
       align-items: center;
@@ -59,6 +60,18 @@
 
     .control-row {
       grid-column: 1 / span 2;
+      display: grid;
+      grid-template-columns: repeat(3, 58px);
+      grid-template-rows: repeat(2, 52px);
+      justify-content: center;
+    }
+
+    .cat-controls {
+      display: none;
+      justify-content: center;
+    }
+
+    .cat-controls.is-visible {
       display: grid;
       grid-template-columns: repeat(3, 58px);
       grid-template-rows: repeat(2, 52px);
@@ -113,7 +126,8 @@
 
       .control-actions,
       .control-menu,
-      .control-row {
+      .control-row,
+      .cat-controls {
         justify-content: center;
       }
 
@@ -174,6 +188,11 @@
         grid-template-rows: repeat(2, 42px);
       }
 
+      .cat-controls.is-visible {
+        grid-template-columns: repeat(3, 50px);
+        grid-template-rows: repeat(2, 42px);
+      }
+
       .mobile-btn {
         min-width: 50px;
         min-height: 42px;
@@ -186,6 +205,27 @@
 
       .mobile-btn.tall {
         min-height: 84px;
+      }
+
+      body.two-player-mode .wrap {
+        grid-template-columns: 25vw 50vw 25vw;
+      }
+
+      body.two-player-mode canvas {
+        width: 50vw;
+      }
+
+      body.two-player-mode .cat-controls.is-visible {
+        display: grid;
+        width: 25vw;
+        min-height: 330px;
+        align-content: start;
+        justify-content: center;
+        padding-top: 8px;
+      }
+
+      body.two-player-mode .mobile-controls {
+        width: 25vw;
       }
     }
 
@@ -204,6 +244,14 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="cat-controls" aria-label="Cat controls">
+      <button class="mobile-btn blank" type="button" tabindex="-1">.</button>
+      <button class="mobile-btn" type="button" data-key="w">Up</button>
+      <button class="mobile-btn blank" type="button" tabindex="-1">.</button>
+      <button class="mobile-btn" type="button" data-key="a">Left</button>
+      <button class="mobile-btn" type="button" data-key="s">Down</button>
+      <button class="mobile-btn" type="button" data-key="d">Right</button>
+    </div>
     <canvas id="game" width="960" height="540"></canvas>
     <div class="mobile-controls" aria-label="Mobile controls">
       <div class="control-menu">

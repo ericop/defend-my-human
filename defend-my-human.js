@@ -34,6 +34,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 const SAVE_KEY = "defend-my-human-progress";
 const mobileButtons = Array.from(document.querySelectorAll("[data-key]"));
+const catControls = document.querySelector(".cat-controls");
 
 const keys = {
   dogLeft: false,
@@ -1202,6 +1203,13 @@ function releaseVirtualKey(key) {
   updateInput(key, false);
 }
 
+function syncMobileLayout() {
+  document.body.classList.toggle("two-player-mode", game.mode === "two-player");
+  if (catControls) {
+    catControls.classList.toggle("is-visible", game.mode === "two-player");
+  }
+}
+
 window.addEventListener("keydown", (event) => {
   const inGameplay = ["intro", "playing", "game over"].includes(game.state);
   if (inGameplay) updateInput(event.key, true);
@@ -1218,21 +1226,32 @@ window.addEventListener("keyup", (event) => {
 
 for (const button of mobileButtons) {
   const { key } = button.dataset;
+  let lastTouchAt = 0;
+  let lastPressAt = 0;
 
   const startPress = (event) => {
     event.preventDefault();
+    const now = Date.now();
+    if (now - lastPressAt < 250) return;
+    lastPressAt = now;
+    if (event.type.startsWith("touch")) lastTouchAt = Date.now();
     button.classList.add("is-active");
     pressVirtualKey(key);
   };
 
   const endPress = (event) => {
     event.preventDefault();
+    if (event.type.startsWith("touch")) lastTouchAt = Date.now();
     button.classList.remove("is-active");
     releaseVirtualKey(key);
   };
 
   const tapPress = (event) => {
     event.preventDefault();
+    const now = Date.now();
+    if (now - lastTouchAt < 500) return;
+    if (now - lastPressAt < 250) return;
+    lastPressAt = now;
     button.classList.add("is-active");
     pressVirtualKey(key);
     window.setTimeout(() => {
@@ -1257,6 +1276,7 @@ function frame(timestamp) {
   const dt = clamp((timestamp - lastTime) / 1000, 0, 0.033);
   lastTime = timestamp;
 
+  syncMobileLayout();
   game.update(dt);
   game.draw(ctx);
   requestAnimationFrame(frame);
